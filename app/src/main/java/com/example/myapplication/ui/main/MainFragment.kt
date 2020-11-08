@@ -1,5 +1,6 @@
-package com.example.myapplication.ui.main
+package com.example.myapplic
 
+import com.example.myapplication.ui.main.MainViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,12 +35,25 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        viewModel.viewState.observe(this, Observer<MainViewModel.ViewState> {
+        viewModel.viewState.observe(this, Observer {
             it?.let { render(it) } })
 
-        binding.submitButton.setOnClickListener { binding.firstPanelText.text= binding.plainTextInput.getText() }
+        binding.submitButton.setOnClickListener {
+            viewModel.updateValues(binding.plainTextInput.text)
+            createTitle()
+        }
 
     }
+
+    fun createTitle(){
+        binding.firstPanelText.text =
+                "Advised Breakdown: `\n` With a post-tax income of ${viewModel.incomeAfterTax} and a monthly usable income of ${viewModel.monthlyUsable} `\n`You should save 40%: ${viewModel.save}  rent 35%: ${viewModel.rent} utilities 10% ${viewModel.utilities} other 15%: ${viewModel.other}"
+    }
+
+
+
+
+
 
     fun fakeSetViewState(viewState: MainViewModel.ViewState){
         viewState.url= "Hello World"

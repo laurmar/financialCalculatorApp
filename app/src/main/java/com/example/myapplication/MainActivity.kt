@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.example.myapplication.ui.main.MainFragment
+import com.example.myapplic.MainFragment
 import com.example.myapplication.ui.main.MainViewModel
 
 class MainActivity : AppCompatActivity() {
