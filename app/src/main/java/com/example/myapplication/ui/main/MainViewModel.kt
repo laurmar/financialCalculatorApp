@@ -4,15 +4,13 @@ import android.text.Editable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.SavingsProfile
 
 class MainViewModel : ViewModel() {
 
-    var other: Double = 0.0
-    var utilities: Double = 0.0
-    var rent: Double = 0.0
-    var save: Double = 0.0
-    var monthlyUsable: Double = 0.0
-    var incomeAfterTax: Double = 0.0
+
+    //Laura: next I want to convert these into a data class
+
 
     val empty = MutableLiveData<Boolean>().apply { value = false }
 
@@ -20,41 +18,31 @@ class MainViewModel : ViewModel() {
 
     val toastMessage = MutableLiveData<String>()
 
-    fun updateValues(inputtedNumber: Editable){
-        val x: Int = inputtedNumber.toString().toInt()
-        getIncomeAfterTax(x, 25.0)
-        getMonthlyUsableIncome(this.incomeAfterTax)
-        calculateAdvisedSave(monthlyUsable)
-        calculateAdvisedRent(monthlyUsable)
-        calculateAdvisedUtilities(monthlyUsable)
-        calculateAdvisedOther(monthlyUsable)
 
-    }
-
-    private fun getIncomeAfterTax(income: Int, tax: Double) {
+    private fun getIncomeAfterTax(income: Int, tax: Double): Double {
         val taxedAmount: Double = income * (tax / 100.0f)
-        this.incomeAfterTax=  income - taxedAmount
+        return  income - taxedAmount
     }
 
-    private fun getMonthlyUsableIncome(afterTax: Double) {
+    private fun getMonthlyUsableIncome(afterTax: Double): Double {
         val weekly = afterTax / 52
-        this.monthlyUsable = weekly * 4
+        return weekly * 4
     }
 
-    private fun calculateAdvisedRent(totalPerMonth: Double) {
-        this.rent = totalPerMonth * (35 / 100.0f)
+    private fun calculateAdvisedRent(totalPerMonth: Double): Double {
+        return totalPerMonth * (35 / 100.0f)
     }
 
-    private fun calculateAdvisedUtilities(totalPerMonth: Double) {
-        this.utilities = totalPerMonth * (10 / 100.0f)
+    private fun calculateAdvisedUtilities(totalPerMonth: Double): Double {
+        return totalPerMonth * (10 / 100.0f)
     }
 
-    private fun calculateAdvisedOther(totalPerMonth: Double) {
-        this.other = totalPerMonth * (15 / 100.0f)
+    private fun calculateAdvisedOther(totalPerMonth: Double): Double {
+        return totalPerMonth * (15 / 100.0f)
     }
 
-    private fun calculateAdvisedSave(totalPerMonth: Double) {
-        this.save = totalPerMonth * (40 / 100.0f)
+    private fun calculateAdvisedSave(totalPerMonth: Double): Double {
+        return totalPerMonth * (40 / 100.0f)
     }
 
 
@@ -73,6 +61,17 @@ class MainViewModel : ViewModel() {
     }
 
     private fun currentViewState(): ViewState = viewState.value!!
+
+    fun createSavingsProfile(person: SavingsProfile, text: Editable?) {
+        val x: Int = text.toString().toInt()
+         person.incomeAfterTax = getIncomeAfterTax(x, 25.0)
+        person.monthlyUsable = getMonthlyUsableIncome(person.incomeAfterTax)
+        person.save = calculateAdvisedSave(person.monthlyUsable)
+        person.rent = calculateAdvisedRent(person.monthlyUsable)
+        person.utilities = calculateAdvisedUtilities(person.monthlyUsable)
+        person.other = calculateAdvisedOther(person.monthlyUsable)
+
+    }
 
 
 }

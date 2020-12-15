@@ -6,9 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.myapplication.SavingsProfile
 import com.example.myapplication.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
@@ -20,6 +25,8 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: MainFragmentBinding
     private  var viewState: MainViewModel.ViewState? = null
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,19 +42,20 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        viewModel.viewState.observe(this, Observer {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer {
             it?.let { render(it) } })
 
         binding.submitButton.setOnClickListener {
-            viewModel.updateValues(binding.plainTextInput.text)
-            createTitle()
+            val person = SavingsProfile("Max")
+            viewModel.createSavingsProfile(person, binding.plainTextInput.text)
+            createTitle(person)
         }
 
     }
 
-    fun createTitle(){
+    fun createTitle(person: SavingsProfile) {
         binding.firstPanelText.text =
-                "Advised Breakdown: `\n` With a post-tax income of ${viewModel.incomeAfterTax} and a monthly usable income of ${viewModel.monthlyUsable} `\n`You should save 40%: ${viewModel.save}  rent 35%: ${viewModel.rent} utilities 10% ${viewModel.utilities} other 15%: ${viewModel.other}"
+                "Advised Breakdown: `\n` With a post-tax income of ${person.incomeAfterTax} and a monthly usable income of ${person.monthlyUsable} `\n`You should save 40%: ${person.save}  rent 35%: ${person.rent} utilities 10% ${person.utilities} other 15%: ${person.other}"
     }
 
 
@@ -77,6 +85,22 @@ class MainFragment : Fragment() {
             true ->  Log.i("laura", "showClearButton()")
             false ->  Log.i("laura", "hideClearButton()")
         }
+    }
+
+
+    override fun <I : Any?, O : Any?> prepareCall(
+        contract: ActivityResultContract<I, O>,
+        callback: ActivityResultCallback<O>
+    ): ActivityResultLauncher<I> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <I : Any?, O : Any?> prepareCall(
+        contract: ActivityResultContract<I, O>,
+        registry: ActivityResultRegistry,
+        callback: ActivityResultCallback<O>
+    ): ActivityResultLauncher<I> {
+        TODO("Not yet implemented")
     }
 
 }
